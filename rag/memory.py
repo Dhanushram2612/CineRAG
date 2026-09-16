@@ -1,6 +1,6 @@
 from . import llm_client
 
-MAX_TURNS_KEPT = 6  # trailing turns kept in context, to bound prompt size
+MAX_TURNS_KEPT = 6 
 
 CONDENSE_SYSTEM_PROMPT = (
     "You rewrite a user's latest message into a single, standalone movie "
