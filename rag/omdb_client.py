@@ -1,15 +1,4 @@
-"""
-OMDb API client — live enrichment for retrieved movies (poster, rating,
-plot). Chosen over TMDB because TMDB's API/website is blocked on some
-networks (some Indian ISPs bundle themoviedb.org into anti-piracy
-blocklists). OMDb is a different provider/domain and unaffected.
 
-OMDb has no bulk "discover" endpoint, only title lookup — fine here since
-we're only enriching an already-retrieved shortlist (~5-8 movies/query),
-not building a catalog from scratch (see ingest.py for that).
-
-Free tier: 1,000 requests/day via https://www.omdbapi.com/apikey.aspx
-"""
 import time
 import requests
 from . import config
