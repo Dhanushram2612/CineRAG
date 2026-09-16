@@ -1,10 +1,10 @@
-
 import requests
 from . import config
 
 
 class LLMError(Exception):
-  
+    pass
+
 
 def _chat_ollama(messages: list[dict]) -> str:
     try:
