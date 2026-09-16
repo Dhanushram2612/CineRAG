@@ -137,6 +137,16 @@ def answer(user_message: str, memory: ConversationMemory,
             min_vote_count=config.MIN_VOTE_COUNT, min_vote_average=config.MIN_VOTE_AVERAGE,
         )
         if not candidates:
+            candidates = vectorstore.search(
+                query_text=search_query, n_results=config.TOP_K, language=language,
+                min_vote_count=config.MIN_VOTE_COUNT,
+            )
+        if not candidates:
+            candidates = vectorstore.search(
+                query_text=search_query, n_results=config.TOP_K,
+                min_vote_count=config.MIN_VOTE_COUNT,
+            )
+        if not candidates:
             reply = ("I couldn't find matching movies in the catalog for that. "
                       "Try rephrasing, or widen the language filter.")
             memory.add_user(user_message)
