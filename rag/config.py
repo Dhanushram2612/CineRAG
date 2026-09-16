@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -21,7 +20,7 @@ COLLECTION_NAME = "movies"
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
 
-TOP_K = 8
+TOP_K = 20
 MIN_VOTE_COUNT = 50 
 MIN_VOTE_AVERAGE = float(os.environ.get("MIN_VOTE_AVERAGE", "6.0"))
 
