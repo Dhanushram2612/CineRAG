@@ -1,22 +1,4 @@
-"""
-Builds the base catalog from the static Kaggle "tmdb-movie-metadata" CSV
-export — a one-time file download, not a live API call. This project uses
-OMDb (not TMDB) for everything live, since TMDB's API/website is blocked on
-some networks (notably bundled into anti-piracy blocklists on parts of the
-Indian network) — so catalog building can't depend on it either.
 
-Produces a parquet snapshot loaded into ChromaDB. The deployed app just
-loads the snapshot; it never has to re-embed the whole catalog live.
-
-Download the dataset from Kaggle: search "tmdb-movie-metadata"
-(tmdb_5000_movies.csv is required; tmdb_5000_credits.csv is optional but
-recommended — it adds director + cast to the embedded text, which noticeably
-improves match quality over title+genre+overview alone).
-
-Usage:
-    python -m rag.ingest --movies tmdb_5000_movies.csv --credits tmdb_5000_credits.csv
-    python -m rag.ingest --movies tmdb_5000_movies.csv   # credits optional
-"""
 import argparse
 import ast
 import pandas as pd
@@ -49,11 +31,7 @@ def _director_name(crew_x) -> str:
 
 
 def _crew_job_name(crew_x, jobs: set[str]) -> str:
-    """Generic version of _director_name — finds the first crew member
-    whose job matches any of the given job titles. Used for composer and
-    writer too, since TMDB's crew job field uses several different labels
-    for what's conceptually the same role (e.g. a writer might be credited
-    as "Writer", "Screenplay", or "Story")."""
+   
     items = _safe_eval(crew_x)
     for member in items:
         if isinstance(member, dict) and member.get("job") in jobs:
@@ -66,9 +44,6 @@ def _composer_name(crew_x) -> str:
 
 
 def _writer_name(crew_x) -> str:
-    # Checked in this priority order: screenplay is the most direct writing
-    # credit; "Story" is used when someone's credited for the underlying
-    # story but not the screenplay itself.
     return (_crew_job_name(crew_x, {"Screenplay"})
             or _crew_job_name(crew_x, {"Writer"})
             or _crew_job_name(crew_x, {"Story"}))
