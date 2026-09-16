@@ -1,15 +1,10 @@
-"""
-One interface, two backends. Local dev runs Ollama; the deployed HF/Streamlit
-app runs Groq. Nothing else in the codebase needs to know which one is active.
-"""
+
 import requests
 from . import config
 
 
 class LLMError(Exception):
-    """Raised when the LLM backend fails after retries — callers should show
-    a friendly message instead of letting a raw exception hit the user."""
-
+  
 
 def _chat_ollama(messages: list[dict]) -> str:
     try:
