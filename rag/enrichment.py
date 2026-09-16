@@ -1,18 +1,4 @@
-"""
-Enrichment backend switch — same pattern as llm_client.py's ollama/groq
-switch, applied to live per-candidate enrichment.
 
-TMDB is the richer source (ratings, overview, poster, credits) but its API
-is blocked by some Indian ISPs, which breaks local dev entirely if it's the
-only option. OMDb is the resilient default: a different provider/domain,
-free, title-lookup based — exactly what's needed to enrich an already
-retrieved shortlist (it can't do bulk discovery, but it doesn't need to
-here).
-
-Both backends are normalized to the same shape so rag_pipeline.py never
-needs to know which one is active:
-    {id: {"vote_average": float|None, "overview": str|None, "poster_url": str|None}}
-"""
 from . import config, tmdb_client, omdb_client
 
 
