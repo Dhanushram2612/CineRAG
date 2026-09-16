@@ -4,9 +4,7 @@ from rag.memory import ConversationMemory
 st.set_page_config(page_title="CineRAG", page_icon="🎬", layout="wide")
 @st.cache_resource
 def _startup_check():
-    """Runs once per process, not per request. Fails loudly and clearly if
-    secrets are missing, instead of crashing three calls deep with a raw
-    traceback."""
+  
     try:
         config.validate()
     except RuntimeError as e:
@@ -22,12 +20,7 @@ def _render_candidates(candidates: list[dict]) -> None:
         with col:
             if c.get("poster_url"):
                 st.image(c["poster_url"], use_container_width=True)
-            # `.get('live_vote_average', fallback)` is wrong here: OMDb sets
-            # the key to None (not missing) when it has no rating for a
-            # title, and .get()'s default only applies to a MISSING key —
-            # so a None value would render as the literal text "None"
-            # instead of falling back to the catalog rating. `or` correctly
-            # treats None (and 0) as "use the fallback instead."
+           
             rating = c.get("live_vote_average") or c.get("vote_average")
             badge = " 🏆 Top Pick" if c.get("is_top_pick") else ""
             st.caption(f"**{c['title']}**{badge}  \n⭐ {rating}")
