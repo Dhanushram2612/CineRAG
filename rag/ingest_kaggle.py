@@ -1,20 +1,4 @@
-"""
-Alternative to ingest.py for building the base catalog WITHOUT any TMDB API
-call — uses the static Kaggle "tmdb-movie-metadata" CSV export instead (a
-one-time file download, not a live request). This is the practical fix for
-networks where themoviedb.org / api.themoviedb.org is blocked (some Indian
-ISPs bundle it into anti-piracy blocklists that have nothing to do with it).
 
-Produces the exact same snapshot schema as ingest.py, so vectorstore.py and
-rag_pipeline.py work identically regardless of which ingest path built the
-catalog.
-
-Download the dataset from Kaggle: search "tmdb-movie-metadata"
-(only tmdb_5000_movies.csv is needed — genres/overview/ratings are all in it).
-
-Usage:
-    python -m rag.ingest_kaggle --movies tmdb_5000_movies.csv
-"""
 import argparse
 import ast
 import pandas as pd
