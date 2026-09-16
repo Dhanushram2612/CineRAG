@@ -94,6 +94,16 @@ def _fuzzy_resolve(text: str, known_names: list[str], cutoff: float) -> tuple[st
     if not known_names:
         return None, 0.0
 
+    # Surname-only matching is riskier than full-name matching, and riskiest
+    # of all when the query contributes just a single bare word: common
+    # English words are sometimes also real people's surnames (Christmas,
+    # Christian, Christie, Chase, Day, Frost...), so a single word needs to
+    # be an almost-exact match before it's trusted as a person reference.
+    # Multi-word ngrams (e.g. "tom hanks") are specific enough to keep the
+    # normal tolerance.
+    SURNAME_CUTOFF_BONUS = 0.12
+    SINGLE_WORD_SURNAME_CUTOFF = 0.95
+
     full_lookup = {d.lower(): d for d in known_names}
     surname_lookup: dict[str, str] = {}
     for d in known_names:
@@ -104,12 +114,17 @@ def _fuzzy_resolve(text: str, known_names: list[str], cutoff: float) -> tuple[st
     best_match = None
     best_score = 0.0
     for ngram in _candidate_ngrams(text):
+        word_count = len(ngram.split())
         cleaned = ngram.lower()
         if cleaned.endswith("s") and not cleaned.endswith("ss"):
             cleaned = cleaned[:-1]
 
-        for lookup in (full_lookup, surname_lookup):
-            matches = difflib.get_close_matches(cleaned, list(lookup.keys()), n=1, cutoff=cutoff)
+        surname_cutoff = (
+            SINGLE_WORD_SURNAME_CUTOFF if word_count == 1
+            else min(cutoff + SURNAME_CUTOFF_BONUS, 0.97)
+        )
+        for lookup, lookup_cutoff in ((full_lookup, cutoff), (surname_lookup, surname_cutoff)):
+            matches = difflib.get_close_matches(cleaned, list(lookup.keys()), n=1, cutoff=lookup_cutoff)
             if matches:
                 score = difflib.SequenceMatcher(None, cleaned, matches[0]).ratio()
                 if score > best_score:
