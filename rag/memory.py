@@ -1,12 +1,3 @@
-"""
-Multi-turn support. Two things v1 didn't have at all:
-
-1. A running history, so "something less violent" means something.
-2. Query condensation: before we embed and search, we ask the LLM to rewrite
-   the latest message into a standalone search query using the history.
-   Without this, a follow-up like "shorter ones please" gets embedded on its
-   own and retrieves nothing relevant — the embedding model has no memory.
-"""
 from . import llm_client
 
 MAX_TURNS_KEPT = 6  # trailing turns kept in context, to bound prompt size
